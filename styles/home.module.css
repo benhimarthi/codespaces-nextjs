@@ -1,11 +1,169 @@
-.main {
-  padding: 20px 20px 60px;
-  max-width: 680px;
-  margin: 0 auto;
+.page {
+  min-height: 100vh;
+  padding: 32px 20px;
+  display: grid;
+  place-items: center;
+  background: #f5f7fb;
+  color: #172033;
 }
 
-.hr {
-  border: none;
-  border-bottom: 1px solid #efefef;
-  margin: 3em auto;
+.card {
+  width: min(100%, 440px);
+  padding: 40px;
+  border: 1px solid #e4e8f0;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 16px 48px rgb(28 42 68 / 9%);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #5267c7;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.card h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 5vw, 2rem);
+  line-height: 1.2;
+}
+
+.description {
+  margin: 12px 0 24px;
+  color: #596579;
+}
+
+.googleButton,
+.primaryButton {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.googleButton {
+  border: 1px solid #cbd2df;
+  background: #fff;
+  color: #172033;
+}
+
+.googleButton:hover:not(:disabled) {
+  background: #f8f9fc;
+}
+
+.primaryButton {
+  margin-top: 8px;
+  background: #465bc4;
+  color: #fff;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: #374aa9;
+}
+
+.googleButton:disabled,
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+  color: #778196;
+  font-size: 0.85rem;
+}
+
+.divider::before,
+.divider::after {
+  height: 1px;
+  flex: 1;
+  background: #e4e8f0;
+  content: '';
+}
+
+.form {
+  display: grid;
+  gap: 10px;
+}
+
+.form label {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.form input {
+  width: 100%;
+  min-height: 46px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cbd2df;
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+}
+
+.form input:focus,
+.googleButton:focus-visible,
+.primaryButton:focus-visible,
+.switchMode button:focus-visible {
+  outline: 3px solid rgb(70 91 196 / 25%);
+  outline-offset: 2px;
+}
+
+.error {
+  margin: 14px 0 0;
+  color: #b42318;
+  font-size: 0.9rem;
+}
+
+.switchMode {
+  margin: 22px 0 0;
+  color: #596579;
+  text-align: center;
+}
+
+.switchMode button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #465bc4;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.switchMode button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.signedIn {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.signedIn p {
+  margin: 0;
+  color: #596579;
+}
+
+.signedIn strong {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 22px;
+  }
 }

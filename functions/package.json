@@ -1,0 +1,21 @@
+{
+  "name": "codespaces-nextjs-functions",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "build": "find src -name '*.js' -print0 | xargs -0 -n1 node --check",
+    "test:emulators": "npm run build && firebase emulators:exec --config ../firebase.json --project demo-auth-service --only auth,firestore,functions,storage \"node --test test/*.test.js\""
+  },
+  "dependencies": {
+    "firebase-admin": "14.5.0",
+    "firebase-functions": "^7.4.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "firebase-tools": "15.34.0"
+  }
+}

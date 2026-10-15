@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+/functions/node_modules
+/functions/.env
+/functions/*-debug.log
 /.pnp
 .pnp.js
 
