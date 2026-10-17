@@ -8,5 +8,6 @@ export const registerUserSchema = z.object({
 
 export const setUserRoleSchema = z.object({
   email: z.string().trim().email().max(254).transform((email) => email.toLowerCase()),
-  role: z.enum(["admin", "user"]),
+  role: z.enum(["admin", "user", "superadmin"]),
+  reason: z.string().trim().min(10).max(1000),
 }).strict();

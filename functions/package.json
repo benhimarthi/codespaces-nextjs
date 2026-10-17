@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "find src -name '*.js' -print0 | xargs -0 -n1 node --check",
-    "test:emulators": "npm run build && firebase emulators:exec --config ../firebase.json --project demo-auth-service --only auth,firestore,functions,storage \"node --test test/*.test.js\""
+    "test:emulators": "npm run build && FIREBASE_STORAGE_BUCKET=your-project.appspot.com firebase emulators:exec --config ../firebase.json --project demo-auth-service --only auth,firestore,functions,storage \"FIREBASE_STORAGE_BUCKET=your-project.appspot.com node --env-file=.env.example --test --test-concurrency=1 test/*.test.js\""
   },
   "dependencies": {
     "firebase-admin": "14.5.0",

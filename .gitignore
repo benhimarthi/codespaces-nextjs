@@ -4,7 +4,11 @@
 /node_modules
 /functions/node_modules
 /functions/.env
+/functions/.env.next-3d-scene
 /functions/*-debug.log
+/infra/.terraform/
+/infra/terraform.tfstate
+/infra/terraform.tfstate.*
 /.pnp
 .pnp.js
 

@@ -10,7 +10,9 @@
     }
   ],
   "firestore": {
-    "rules": "firestore.rules"
+    "database": "ai-studio-1a058e78-fda1-403c-bc1b-85c0814c2690",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   },
   "storage": {
     "rules": "storage.rules"

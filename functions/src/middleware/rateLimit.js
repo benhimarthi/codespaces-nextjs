@@ -14,7 +14,9 @@ export async function rateLimit(request, action, policy) {
   const ip = request.rawRequest.ip;
 
   if (uid) identities.push({ type: "uid", value: uid, limit: policy.perUid });
-  if (ip) identities.push({ type: "ip", value: ip, limit: policy.perIp });
+  if (ip && Number.isInteger(policy.perIp)) {
+    identities.push({ type: "ip", value: ip, limit: policy.perIp });
+  }
   if (identities.length === 0) {
     throw new HttpsError("unavailable", "Request could not be processed.");
   }
@@ -34,8 +36,11 @@ export async function rateLimit(request, action, policy) {
         event: "rate_limit",
         action,
         outcome: "denied",
+        code: action.startsWith("admin:") ? "ADMIN_RATE_LIMITED" : "RATE_LIMITED",
       });
-      throw new HttpsError("resource-exhausted", "Too many requests.");
+      const error = new HttpsError("resource-exhausted", "Too many requests.");
+      if (action.startsWith("admin:")) error.internalCode = "ADMIN_RATE_LIMITED";
+      throw error;
     }
 
     snapshots.forEach((snapshot, index) => {

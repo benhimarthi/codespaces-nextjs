@@ -1,11 +1,152 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function activeCaller() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.disabled != true
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.deleted != true
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status != 'disabled'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status != 'deleted';
+    }
+
     match /users/{userId} {
       allow get: if request.auth != null
         && request.auth.uid == userId
-        && resource.data.keys().hasOnly(['displayName', 'createdAt']);
+        && resource.data.keys().hasOnly([
+          'displayName',
+          'createdAt',
+          'role',
+          'disabled',
+          'deleted',
+          'deletedAt',
+          'updatedAt'
+        ]);
       allow list, create, update, delete: if false;
+    }
+
+    match /auditLogs/{logId} {
+      allow read, write: if false;
+    }
+
+    match /notifications/{notificationId} {
+      allow get, list: if activeCaller()
+        && resource.data.userId == request.auth.uid;
+      allow create, delete: if false;
+      allow update: if activeCaller()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt'])
+        && request.resource.data.readAt is timestamp;
+    }
+
+    match /notificationPreferences/{userId} {
+      allow get, list: if activeCaller() && request.auth.uid == userId;
+      allow create, update, delete: if false;
+    }
+
+    match /deviceTokens/{userId} {
+      allow get, list: if activeCaller() && request.auth.uid == userId;
+      allow create, update, delete: if false;
+
+      match /tokens/{tokenId} {
+        allow get, list: if activeCaller() && request.auth.uid == userId;
+        allow create, update, delete: if false;
+      }
+    }
+
+    match /whatsappLinks/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /whatsappPhoneOwners/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /whatsappOtpRecords/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /whatsappPendingCommands/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /whatsappInboundMessages/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /notificationUsage/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /notificationDeadLetters/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /whatsappInboundLimits/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /carts/{userId} {
+      allow read, write: if false;
+
+      match /items/{itemId} {
+        allow get, list: if request.auth != null
+          && request.auth.uid == userId;
+        allow create, update, delete: if false;
+      }
+    }
+
+    match /orderGroups/{orderGroupId} {
+      allow get, list: if request.auth != null
+        && resource.data.buyerUid == request.auth.uid;
+      allow create, update, delete: if false;
+    }
+
+    match /orders/{orderId} {
+      allow get, list: if request.auth != null
+        && (resource.data.buyerUid == request.auth.uid
+          || resource.data.sellerId == request.auth.uid);
+      allow create, update, delete: if false;
+    }
+
+    match /orderPrivate/{orderId} {
+      function order() {
+        return get(/databases/$(database)/documents/orders/$(orderId)).data;
+      }
+
+      allow get: if request.auth != null
+        && (order().buyerUid == request.auth.uid
+          || (order().sellerId == request.auth.uid
+            && order().status in [
+              'confirmed',
+              'processing',
+              'out_for_delivery',
+              'ready_for_pickup',
+              'delivered',
+              'completed',
+              'failed_delivery',
+              'returned'
+            ]));
+      allow list, create, update, delete: if false;
+    }
+
+    match /orderSecrets/{orderId} {
+      allow read, write: if false;
+    }
+
+    match /adminRequests/{requestId} {
+      allow read, write: if false;
+    }
+
+    match /products/{productId} {
+      allow get, list: if resource.data.status == 'active'
+        || (request.auth != null && resource.data.sellerId == request.auth.uid);
+      allow create, update, delete: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow get, list: if resource.data.active == true;
+      allow create, update, delete: if false;
     }
 
     match /{document=**} {

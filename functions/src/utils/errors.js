@@ -9,9 +9,22 @@ export async function runSafely(event, action) {
       throw error;
     }
 
-    logger.error("Callable operation failed", {
+    const errorName = error instanceof Error
+      ? error.name
+      : typeof error === "object" && error !== null && "name" in error &&
+          typeof error.name === "string"
+        ? error.name
+        : typeof error;
+    const errorCode = typeof error === "object" && error !== null && "code" in error &&
+      (typeof error.code === "string" || typeof error.code === "number")
+      ? error.code
+      : undefined;
+
+    logger.error("Auth operation failed", {
       event,
       outcome: "failure",
+      errorName,
+      ...(errorCode === undefined ? {} : { errorCode }),
     });
     throw new HttpsError("internal", "Unable to complete the request.");
   }
